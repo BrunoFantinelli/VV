@@ -1,0 +1,145 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
+using VV.Estrutura;
+
+namespace VV
+{
+    class Program
+    {
+        //public static string verificacao;
+        public static Grafo grafo = new Grafo();
+
+        static void Main(string[] args)
+        {
+ 
+            grafo = Parser("C:\\Users\\bruno\\Desktop\\entrada.txt");
+
+            List<Estado> resultado = SAT("q-r");
+            Console.WriteLine(resultado.Count);
+            Console.WriteLine(resultado[0].Nome);
+        }
+
+        public static Grafo Parser(string arquivo)
+        {
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(arquivo);
+
+            Grafo aux = new Grafo();
+
+            aux.Estados = new List<Estado>();
+            aux.Transicoes = new List<Transicao>();
+
+            while ((line = file.ReadLine()) != null)
+            {
+                Estado estado = new Estado();
+                if (line.StartsWith("T"))
+                {
+                    string[] divisao = line.Split(":");
+                    string[] transicoes = divisao[1].Split(",");
+                    for (int i = 0; i < transicoes.Length; i++)
+                    {
+                        Transicao transicao = new Transicao();
+                        string[] splitFinal = transicoes[i].Split("-");
+                        transicao.From = splitFinal[0];
+                        transicao.To = splitFinal[1];
+                        aux.Transicoes.Add(transicao);
+                    }
+                }
+                else if (line.StartsWith("F"))
+                {
+                    string[] divisao = line.Split(":");
+                    //verificacao = divisao[1];
+                }
+                else
+                {
+                    string[] divisao = line.Split(",");
+                    estado.Nome = divisao[0];
+                    for (int i = 1; i < divisao.Length; i++)
+                    {
+                        estado.Rotulos.Add(divisao[i]);
+                    }
+                    aux.Estados.Add(estado);
+                }
+            }
+
+            file.Close();
+            return aux;
+        }
+
+        public static List<Estado> SAT(string verificacao)
+        {
+            if (verificacao.Equals("T"))
+            {
+                return grafo.Estados;
+            }
+            else if (verificacao.Equals("F"))
+            {
+                return null;
+            }
+            else if (Regex.IsMatch(verificacao, @"^[a-z]+$"))
+            {
+                return grafo.Estados.Where(p => p.Rotulos.Contains(verificacao)).ToList();
+            }
+            else if (verificacao.StartsWith("~"))
+            {
+                List<Estado> remove = SAT(verificacao.Replace("~", ""));
+                List<Estado> result = grafo.Estados;
+                foreach (Estado estado in remove)
+                {
+                    result.Remove(estado);
+                }
+                
+                return result;
+            }
+            else if (verificacao.Contains("&"))
+            {
+                string[] newVerificacao = verificacao.Split("&");
+                List<Estado> lista1 = SAT(newVerificacao[0]);
+                List<Estado> lista2 = SAT(newVerificacao[1]);
+                List<Estado> retorno = new List<Estado>();
+                foreach(Estado estado1 in lista1)
+                {
+                    foreach(Estado estado2 in lista2)
+                    {
+                        if(estado1.Nome.Equals(estado2.Nome) && !retorno.Contains(estado1))
+                        {
+                            retorno.Add(estado1);
+                        }
+                    }
+                }
+
+                return retorno;
+            }
+            else if (verificacao.Contains("|"))
+            {
+                string[] newVerificacao = verificacao.Split("|");
+                List<Estado> lista1 = SAT(newVerificacao[0]);
+                List<Estado> lista2 = SAT(newVerificacao[1]);
+                List<Estado> retorno = new List<Estado>();
+                foreach (Estado estado1 in lista1)
+                {
+                    retorno.Add(estado1);
+                }
+                foreach (Estado estado2 in lista2)
+                {
+                    if (!retorno.Contains(estado2))
+                    {
+                        retorno.Add(estado2);
+                    }
+                }
+                return retorno;
+            }
+            else if (verificacao.Contains("-"))
+            {
+                return SAT("~" + verificacao.Replace("-", "|"));
+            }
+
+            return null;
+        }
+
+    }
+}
