@@ -1,0 +1,6 @@
+﻿s0,p,q
+s1,p
+s2,q
+s3,r
+T:s0-s1,s1-s0,s1-s3,s3-s0,s3-s2,s2-s0
+F:p&q

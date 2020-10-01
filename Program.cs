@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
@@ -15,8 +16,10 @@ namespace VV
 
         static void Main(string[] args)
         {
- 
-            grafo = Parser("C:\\Users\\bruno\\Desktop\\VV\\Entradas\\entrada5.txt");
+
+            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entrada5.txt";
+
+            grafo = Parser(path);
 
             List<Estado> resultado = SAT(verificacao);
             if(resultado == null)
