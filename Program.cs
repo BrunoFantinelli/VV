@@ -10,17 +10,28 @@ namespace VV
 {
     class Program
     {
-        //public static string verificacao;
+        public static string verificacao;
         public static Grafo grafo = new Grafo();
 
         static void Main(string[] args)
         {
  
-            grafo = Parser("C:\\Users\\bruno\\Desktop\\entrada.txt");
+            grafo = Parser("C:\\Users\\bruno\\Desktop\\VV\\Entradas\\entrada5.txt");
 
-            List<Estado> resultado = SAT("q-r");
-            Console.WriteLine(resultado.Count);
-            Console.WriteLine(resultado[0].Nome);
+            List<Estado> resultado = SAT(verificacao);
+            if(resultado == null)
+            {
+                Console.WriteLine("Vazio");
+            }
+            else
+            {
+                Console.WriteLine("Quantidade de estados: " + resultado.Count);
+                Console.WriteLine("Estados: ");
+                foreach(Estado estado in resultado)
+                {
+                    Console.WriteLine(estado.Nome);
+                }
+            }
         }
 
         public static Grafo Parser(string arquivo)
@@ -52,7 +63,7 @@ namespace VV
                 else if (line.StartsWith("F"))
                 {
                     string[] divisao = line.Split(":");
-                    //verificacao = divisao[1];
+                    verificacao = divisao[1];
                 }
                 else
                 {
@@ -141,5 +152,68 @@ namespace VV
             return null;
         }
 
+
+        public static List<Estado> SATex(string a)
+        {
+            List<Estado> X = new List<Estado>();
+            List<Estado> Y = new List<Estado>();
+
+            X = SAT(a);
+            //Y = ;
+            return Y;
+        }
+        
+        public static List<Estado> SATaf(string a)
+        {
+
+            List<Estado> X = new List<Estado>();
+            List<Estado> Y = new List<Estado>();
+
+            X = grafo.Estados;
+            Y = SAT(a);
+
+            while(X != Y)
+            {
+                X = Y;
+                //Y = ;
+            }
+
+            return Y;
+        }
+
+        public static List<Estado> SATeu(string a, string b)
+        {
+            List<Estado> X = new List<Estado>();
+            List<Estado> Y = new List<Estado>();
+            List<Estado> W = new List<Estado>();
+
+            W = SAT(a);
+            X = grafo.Estados;
+            Y = SAT(b);
+
+            while(X != Y)
+            {
+                X = Y;
+                //Y = ;
+            }
+
+            return Y;
+        }
+
+        public static List<Estado> SATeg(string a)
+        {
+            List<Estado> X = new List<Estado>();
+            List<Estado> Y = new List<Estado>();
+
+            Y = SAT(a);
+            
+            while(X != Y)
+            {
+                X = Y;
+                //Y = ;
+            }
+
+            return Y;
+        }
     }
 }
