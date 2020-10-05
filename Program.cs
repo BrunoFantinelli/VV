@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -17,7 +18,7 @@ namespace VV
         static void Main(string[] args)
         {
 
-            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entrada5.txt";
+            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entrada6.txt";
 
             grafo = Parser(path);
 
@@ -151,6 +152,17 @@ namespace VV
             {
                 return SAT("~" + verificacao.Replace("-", "|"));
             }
+            else if (verificacao.StartsWith("AX"))
+            {
+                verificacao = verificacao.Replace("AX", "EX~");
+                return SAT("~" + verificacao);
+            }
+            else if (verificacao.StartsWith("EX"))
+            {
+                verificacao = verificacao.Replace("EX", "");
+                List<Estado> retorno = SATex(verificacao);
+                return retorno;
+            }
 
             return null;
         }
@@ -160,9 +172,24 @@ namespace VV
         {
             List<Estado> X = new List<Estado>();
             List<Estado> Y = new List<Estado>();
+            List<Estado> estados = grafo.Estados;
+            
 
             X = SAT(a);
-            //Y = ;
+            
+            foreach(Estado estado in estados)
+            {
+                List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From == estado.Nome).ToList();
+                foreach(Transicao trans in transicoes)
+                {
+                    Estado aux = estados.Where(p => p.Nome.Equals(trans.To)).FirstOrDefault();
+                    if(X.Contains(aux) && !Y.Contains(aux))
+                    {
+                        Y.Add(estado);
+                    }
+                }
+            }
+
             return Y;
         }
         
