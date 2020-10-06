@@ -163,6 +163,42 @@ namespace VV
                 List<Estado> retorno = SATex(verificacao);
                 return retorno;
             }
+            else if (verificacao.StartsWith("A"))
+            {
+                verificacao = verificacao.Replace("A", "");
+                string[] split = verificacao.Split("U");
+                verificacao = "~E~" + split[1] + "U~" + split[0] + "&~" + split[1] + "|EG~" + split[1];
+                return SAT(verificacao);
+            }
+            else if (verificacao.StartsWith("E"))
+            {
+                verificacao = verificacao.Replace("E", "");
+                string[] split = verificacao.Split("");
+                return SATeu(split[0], split[1]);
+            }
+            else if (verificacao.StartsWith("EF"))
+            {
+                verificacao = verificacao.Replace("EF", "");
+                verificacao = "ETU" + verificacao;
+                return SAT(verificacao);
+            }
+            else if (verificacao.StartsWith("EG"))
+            {
+                verificacao = verificacao.Replace("EG", "");
+                verificacao = "~AF~" + verificacao;
+                return SAT(verificacao);
+            }
+            else if (verificacao.StartsWith("AF"))
+            {
+                verificacao = verificacao.Replace("AF", "");
+                return SATaf(verificacao);
+            }
+            else if (verificacao.StartsWith("AG"))
+            {
+                verificacao = verificacao.Replace("AG", "");
+                verificacao = "~EF" + verificacao;
+                return SAT(verificacao);
+            }
 
             return null;
         }
@@ -179,7 +215,7 @@ namespace VV
             
             foreach(Estado estado in estados)
             {
-                List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From == estado.Nome).ToList();
+                List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
                 foreach(Transicao trans in transicoes)
                 {
                     Estado aux = estados.Where(p => p.Nome.Equals(trans.To)).FirstOrDefault();
@@ -205,7 +241,23 @@ namespace VV
             while(X != Y)
             {
                 X = Y;
-                //Y = ;
+                foreach(Estado estado in grafo.Estados)
+                {
+                    List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
+                    bool has = true;
+                    foreach(Transicao transicao in transicoes)
+                    {
+                        Estado aux = grafo.Estados.Where(p => p.Nome.Equals(transicao.To)).FirstOrDefault();
+                        if (!Y.Contains(aux))
+                        {
+                            has = false;
+                        }
+                    }
+                    if (has && !Y.Contains(estado))
+                    {
+                        Y.Add(estado);
+                    }
+                }
             }
 
             return Y;
@@ -216,6 +268,9 @@ namespace VV
             List<Estado> X = new List<Estado>();
             List<Estado> Y = new List<Estado>();
             List<Estado> W = new List<Estado>();
+            List<Estado> ListAux = new List<Estado>();
+            List<Estado> Inter = new List<Estado>();
+            List<Estado> NewY = new List<Estado>();
 
             W = SAT(a);
             X = grafo.Estados;
@@ -224,7 +279,34 @@ namespace VV
             while(X != Y)
             {
                 X = Y;
-                //Y = ;
+                foreach(Estado estado in grafo.Estados)
+                {
+                    List<Transicao> trans = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
+                    foreach(Transicao transicao in trans)
+                    {
+                        Estado aux = grafo.Estados.Where(p => p.Nome == transicao.To).FirstOrDefault();
+                        if(Y.Contains(aux) && !ListAux.Contains(aux))
+                        {
+                            ListAux.Add(aux);
+                        }
+                    }
+                }
+                foreach(Estado estado in ListAux)
+                {
+                    if (W.Contains(estado))
+                    {
+                        Inter.Add(estado);
+                    }
+                }
+
+                foreach(Estado estado in Inter)
+                {
+                    if (Y.Contains(estado))
+                    {
+                        NewY.Add(estado);
+                    }
+                }
+                Y = NewY;
             }
 
             return Y;
@@ -234,13 +316,36 @@ namespace VV
         {
             List<Estado> X = new List<Estado>();
             List<Estado> Y = new List<Estado>();
+            List<Estado> aux = new List<Estado>();
+            List<Estado> newY = new List<Estado>();
 
             Y = SAT(a);
             
             while(X != Y)
             {
                 X = Y;
-                //Y = ;
+                foreach(Estado estado in grafo.Estados)
+                {
+                    List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado)).ToList();
+                    foreach(Transicao trans in transicoes)
+                    {
+                        Estado estadoAux = grafo.Estados.Where(p => p.Nome.Equals(trans.To)).FirstOrDefault();
+                        if (Y.Contains(estadoAux))
+                        {
+                            aux.Add(estado);
+                        }
+                    }
+                }
+
+
+                foreach (Estado estado in grafo.Estados)
+                {
+                    if(aux.Contains(estado) && Y.Contains(estado))
+                    {
+                        newY.Add(estado);
+                    }
+                }
+                Y = newY;
             }
 
             return Y;
