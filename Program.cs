@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using VV.Estrutura;
 
@@ -23,6 +21,7 @@ namespace VV
             grafo = Parser(path);
 
             List<Estado> resultado = SAT(verificacao);
+
             if(resultado == null)
             {
                 Console.WriteLine("Vazio");
@@ -103,7 +102,7 @@ namespace VV
             {
                 List<Estado> remove = SAT(verificacao.Replace("~", ""));
                 List<Estado> result = grafo.Estados;
-                foreach (Estado estado in remove)
+                foreach (Estado estado in remove.ToList())
                 {
                     result.Remove(estado);
                 }
@@ -163,19 +162,6 @@ namespace VV
                 List<Estado> retorno = SATex(verificacao);
                 return retorno;
             }
-            else if (verificacao.StartsWith("A"))
-            {
-                verificacao = verificacao.Replace("A", "");
-                string[] split = verificacao.Split("U");
-                verificacao = "~E~" + split[1] + "U~" + split[0] + "&~" + split[1] + "|EG~" + split[1];
-                return SAT(verificacao);
-            }
-            else if (verificacao.StartsWith("E"))
-            {
-                verificacao = verificacao.Replace("E", "");
-                string[] split = verificacao.Split("");
-                return SATeu(split[0], split[1]);
-            }
             else if (verificacao.StartsWith("EF"))
             {
                 verificacao = verificacao.Replace("EF", "");
@@ -198,6 +184,19 @@ namespace VV
                 verificacao = verificacao.Replace("AG", "");
                 verificacao = "~EF" + verificacao;
                 return SAT(verificacao);
+            }
+            else if (verificacao.StartsWith("A"))
+            {
+                verificacao = verificacao.Replace("A", "");
+                string[] split = verificacao.Split("U");
+                verificacao = "~E~" + split[1] + "U~" + split[0] + "&~" + split[1] + "|EG~" + split[1];
+                return SAT(verificacao);
+            }
+            else if (verificacao.StartsWith("E"))
+            {
+                verificacao = verificacao.Replace("E", "");
+                string[] split = verificacao.Split("U");
+                return SATeu(split[0], split[1]);
             }
 
             return null;
@@ -301,7 +300,7 @@ namespace VV
 
                 foreach(Estado estado in Inter)
                 {
-                    if (Y.Contains(estado))
+                    if (Y.Contains(estado) && !NewY.Contains(estado))
                     {
                         NewY.Add(estado);
                     }
