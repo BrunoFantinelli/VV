@@ -306,11 +306,20 @@ namespace VV
 
                 foreach(Estado estado in Inter)
                 {
-                    if (Y.Contains(estado) && !NewY.Contains(estado))
+                    if (!NewY.Contains(estado))
                     {
                         NewY.Add(estado);
                     }
                 }
+
+                foreach(Estado estado in Y)
+                {
+                    if (!NewY.Contains(estado))
+                    {
+                        NewY.Add(estado);
+                    }
+                }
+
                 Y = NewY;
             }
 

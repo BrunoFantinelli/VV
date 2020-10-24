@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bruno\\source\\repos\\VV\\VV.csproj": {}
+    "C:\\Users\\bruno\\Desktop\\VV\\VV.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bruno\\source\\repos\\VV\\VV.csproj": {
+    "C:\\Users\\bruno\\Desktop\\VV\\VV.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bruno\\source\\repos\\VV\\VV.csproj",
+        "projectUniqueName": "C:\\Users\\bruno\\Desktop\\VV\\VV.csproj",
         "projectName": "VV",
-        "projectPath": "C:\\Users\\bruno\\source\\repos\\VV\\VV.csproj",
+        "projectPath": "C:\\Users\\bruno\\Desktop\\VV\\VV.csproj",
         "packagesPath": "C:\\Users\\bruno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bruno\\source\\repos\\VV\\obj\\",
+        "outputPath": "C:\\Users\\bruno\\Desktop\\VV\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -56,7 +56,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

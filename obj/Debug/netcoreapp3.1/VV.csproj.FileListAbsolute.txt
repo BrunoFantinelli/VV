@@ -11,3 +11,14 @@ C:\Users\bruno\source\repos\VV\obj\Debug\netcoreapp3.1\VV.csproj.CoreCompileInpu
 C:\Users\bruno\source\repos\VV\obj\Debug\netcoreapp3.1\VV.dll
 C:\Users\bruno\source\repos\VV\obj\Debug\netcoreapp3.1\VV.pdb
 C:\Users\bruno\source\repos\VV\obj\Debug\netcoreapp3.1\VV.genruntimeconfig.cache
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.exe
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.deps.json
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.runtimeconfig.json
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.runtimeconfig.dev.json
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.dll
+C:\Users\bruno\Desktop\VV\bin\Debug\netcoreapp3.1\VV.pdb
+C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.csprojAssemblyReference.cache
+C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.AssemblyInfoInputs.cache
+C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.AssemblyInfo.cs
+C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.dll
+C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.pdb
