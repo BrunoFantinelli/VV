@@ -101,7 +101,12 @@ namespace VV
             else if (verificacao.StartsWith("~"))
             {
                 List<Estado> remove = SAT(verificacao.Replace("~", ""));
-                List<Estado> result = grafo.Estados;
+                List<Estado> result = new List<Estado>();
+
+                foreach(Estado aux in grafo.Estados)
+                {
+                    result.Add(aux);
+                }
                 foreach (Estado estado in remove.ToList())
                 {
                     result.Remove(estado);
@@ -227,7 +232,7 @@ namespace VV
 
             return Y;
         }
-        
+
         public static List<Estado> SATaf(string a)
         {
 
@@ -237,14 +242,14 @@ namespace VV
             X = grafo.Estados;
             Y = SAT(a);
 
-            while(X != Y)
+            while (X != Y)
             {
                 X = Y;
-                foreach(Estado estado in grafo.Estados)
+                foreach (Estado estado in grafo.Estados)
                 {
                     List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
                     bool has = true;
-                    foreach(Transicao transicao in transicoes)
+                    foreach (Transicao transicao in transicoes)
                     {
                         Estado aux = grafo.Estados.Where(p => p.Nome.Equals(transicao.To)).FirstOrDefault();
                         if (!Y.Contains(aux))
@@ -262,6 +267,7 @@ namespace VV
             return Y;
         }
 
+        //Arrumar SATeu
         public static List<Estado> SATeu(string a, string b)
         {
             List<Estado> X = new List<Estado>();
