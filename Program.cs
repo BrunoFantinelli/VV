@@ -16,7 +16,7 @@ namespace VV
         static void Main(string[] args)
         {
 
-            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entrada6.txt";
+            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entradaATM3.txt";
 
             grafo = Parser(path);
 
@@ -28,6 +28,7 @@ namespace VV
             }
             else
             {
+                Console.WriteLine("Verificacao: " + verificacao);
                 Console.WriteLine("Quantidade de estados: " + resultado.Count);
                 Console.WriteLine("Estados: ");
                 foreach(Estado estado in resultado)
@@ -100,7 +101,7 @@ namespace VV
             }
             else if (verificacao.StartsWith("~"))
             {
-                List<Estado> remove = SAT(verificacao.Replace("~", ""));
+                List<Estado> remove = SAT(ReplaceFirstOccurrance(verificacao, "~", ""));
                 List<Estado> result = new List<Estado>();
 
                 foreach(Estado aux in grafo.Estados)
@@ -158,48 +159,48 @@ namespace VV
             }
             else if (verificacao.StartsWith("AX"))
             {
-                verificacao = verificacao.Replace("AX", "EX~");
+                verificacao = ReplaceFirstOccurrance(verificacao, "AX", "EX~");
                 return SAT("~" + verificacao);
             }
             else if (verificacao.StartsWith("EX"))
             {
-                verificacao = verificacao.Replace("EX", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "EX", "");
                 List<Estado> retorno = SATex(verificacao);
                 return retorno;
             }
             else if (verificacao.StartsWith("EF"))
             {
-                verificacao = verificacao.Replace("EF", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "EF", "");
                 verificacao = "ETU" + verificacao;
                 return SAT(verificacao);
             }
             else if (verificacao.StartsWith("EG"))
             {
-                verificacao = verificacao.Replace("EG", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "EG", "");
                 verificacao = "~AF~" + verificacao;
                 return SAT(verificacao);
             }
             else if (verificacao.StartsWith("AF"))
             {
-                verificacao = verificacao.Replace("AF", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "AF", "");
                 return SATaf(verificacao);
             }
             else if (verificacao.StartsWith("AG"))
             {
-                verificacao = verificacao.Replace("AG", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "AG", "");
                 verificacao = "~EF" + verificacao;
                 return SAT(verificacao);
             }
             else if (verificacao.StartsWith("A"))
             {
-                verificacao = verificacao.Replace("A", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "A", "");
                 string[] split = verificacao.Split("U");
                 verificacao = "~E~" + split[1] + "U~" + split[0] + "&~" + split[1] + "|EG~" + split[1];
                 return SAT(verificacao);
             }
             else if (verificacao.StartsWith("E"))
             {
-                verificacao = verificacao.Replace("E", "");
+                verificacao = ReplaceFirstOccurrance(verificacao, "E", "");
                 string[] split = verificacao.Split("U");
                 return SATeu(split[0], split[1]);
             }
@@ -238,11 +239,12 @@ namespace VV
 
             List<Estado> X = new List<Estado>();
             List<Estado> Y = new List<Estado>();
+            List<Estado> Aux = new List<Estado>();
 
             X = grafo.Estados;
             Y = SAT(a);
 
-            while (X != Y)
+            while (isNotEquals(X, Y))
             {
                 X = Y;
                 foreach (Estado estado in grafo.Estados)
@@ -257,68 +259,48 @@ namespace VV
                             has = false;
                         }
                     }
-                    if (has && !Y.Contains(estado))
+                    if (has && !Aux.Contains(estado))
                     {
-                        Y.Add(estado);
+                        Aux.Add(estado);
                     }
                 }
+                Y = Y.Union(Aux).ToList();
             }
 
             return Y;
         }
 
-        //Arrumar SATeu
         public static List<Estado> SATeu(string a, string b)
         {
             List<Estado> X = new List<Estado>();
             List<Estado> Y = new List<Estado>();
             List<Estado> W = new List<Estado>();
             List<Estado> ListAux = new List<Estado>();
-            List<Estado> Inter = new List<Estado>();
+            List<Estado> Intersec = new List<Estado>();
             List<Estado> NewY = new List<Estado>();
 
             W = SAT(a);
             X = grafo.Estados;
             Y = SAT(b);
 
-            while(X != Y)
+            while(isNotEquals(X,Y))
             {
                 X = Y;
                 foreach(Estado estado in grafo.Estados)
                 {
-                    List<Transicao> trans = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
-                    foreach(Transicao transicao in trans)
+                    List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
+                    foreach(Transicao transicao in transicoes)
                     {
-                        Estado aux = grafo.Estados.Where(p => p.Nome == transicao.To).FirstOrDefault();
-                        if(Y.Contains(aux) && !ListAux.Contains(aux))
+                        Estado aux = grafo.Estados.Where(p => p.Nome.Equals(transicao.To)).FirstOrDefault();
+                        if(Y.Contains(aux) && !ListAux.Contains(estado))
                         {
-                            ListAux.Add(aux);
+                            ListAux.Add(estado);
                         }
                     }
                 }
-                foreach(Estado estado in ListAux)
-                {
-                    if (W.Contains(estado))
-                    {
-                        Inter.Add(estado);
-                    }
-                }
 
-                foreach(Estado estado in Inter)
-                {
-                    if (!NewY.Contains(estado))
-                    {
-                        NewY.Add(estado);
-                    }
-                }
-
-                foreach(Estado estado in Y)
-                {
-                    if (!NewY.Contains(estado))
-                    {
-                        NewY.Add(estado);
-                    }
-                }
+                Intersec = W.Intersect(ListAux).ToList();
+                NewY = Y.Union(Intersec).ToList();
 
                 Y = NewY;
             }
@@ -335,7 +317,7 @@ namespace VV
 
             Y = SAT(a);
             
-            while(X != Y)
+            while(isNotEquals(X, Y))
             {
                 X = Y;
                 foreach(Estado estado in grafo.Estados)
@@ -344,7 +326,7 @@ namespace VV
                     foreach(Transicao trans in transicoes)
                     {
                         Estado estadoAux = grafo.Estados.Where(p => p.Nome.Equals(trans.To)).FirstOrDefault();
-                        if (Y.Contains(estadoAux))
+                        if (Y.Contains(estadoAux) && !aux.Contains(estado))
                         {
                             aux.Add(estado);
                         }
@@ -352,17 +334,53 @@ namespace VV
                 }
 
 
-                foreach (Estado estado in grafo.Estados)
-                {
-                    if(aux.Contains(estado) && Y.Contains(estado))
-                    {
-                        newY.Add(estado);
-                    }
-                }
-                Y = newY;
+                Y = Y.Intersect(aux).ToList();
             }
 
             return Y;
+        }
+
+
+        public static bool isNotEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
+        {
+            var cnt = new Dictionary<T, int>();
+            foreach (T s in list1)
+            {
+                if (cnt.ContainsKey(s))
+                {
+                    cnt[s]++;
+                }
+                else
+                {
+                    cnt.Add(s, 1);
+                }
+            }
+            foreach (T s in list2)
+            {
+                if (cnt.ContainsKey(s))
+                {
+                    cnt[s]--;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return !cnt.Values.All(c => c == 0);
+        }
+
+        public static string ReplaceFirstOccurrance(string original, string oldValue, string newValue)
+        {
+            if (String.IsNullOrEmpty(original))
+                return String.Empty;
+            if (String.IsNullOrEmpty(oldValue))
+                return original;
+            if (String.IsNullOrEmpty(newValue))
+                newValue = String.Empty;
+            int loc = original.IndexOf(oldValue);
+            if (loc == -1)
+                return original;
+            return original.Remove(loc, oldValue.Length).Insert(loc, newValue);
         }
     }
 }

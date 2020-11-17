@@ -1,6 +1,0 @@
-﻿s0,p,r
-s1,q
-s2,q
-s3,r
-T:s0-s1,s1-s2,s0-s3,s3-s2,s2-s1
-F:EpUr

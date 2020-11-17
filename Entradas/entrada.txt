@@ -1,6 +1,7 @@
-s0,p,q
-s1,p
-s2,q
-s3,r
-T:s0-s1,s1-s0,s1-s3,s3-s0,s3-s2,s2-s0
-F:q
+s0,c
+s1,a,c
+s2,a,b
+s3,b
+s4,a
+T:s0-s1,s1-s2,s2-s4,s4-s1,s0-s3,s3-s4
+F:EGa
