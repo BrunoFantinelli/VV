@@ -16,7 +16,7 @@ namespace VV
         static void Main(string[] args)
         {
 
-            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entradaATM3.txt";
+            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entradaATM1.txt";
 
             grafo = Parser(path);
 
@@ -99,74 +99,16 @@ namespace VV
             {
                 return grafo.Estados.Where(p => p.Rotulos.Contains(verificacao)).ToList();
             }
-            else if (verificacao.StartsWith("~"))
-            {
-                List<Estado> remove = SAT(ReplaceFirstOccurrance(verificacao, "~", ""));
-                List<Estado> result = new List<Estado>();
-
-                foreach(Estado aux in grafo.Estados)
-                {
-                    result.Add(aux);
-                }
-                foreach (Estado estado in remove.ToList())
-                {
-                    result.Remove(estado);
-                }
-                
-                return result;
-            }
-            else if (verificacao.Contains("&"))
-            {
-                string[] newVerificacao = verificacao.Split("&");
-                List<Estado> lista1 = SAT(newVerificacao[0]);
-                List<Estado> lista2 = SAT(newVerificacao[1]);
-                List<Estado> retorno = new List<Estado>();
-                foreach(Estado estado1 in lista1)
-                {
-                    foreach(Estado estado2 in lista2)
-                    {
-                        if(estado1.Nome.Equals(estado2.Nome) && !retorno.Contains(estado1))
-                        {
-                            retorno.Add(estado1);
-                        }
-                    }
-                }
-
-                return retorno;
-            }
-            else if (verificacao.Contains("|"))
-            {
-                string[] newVerificacao = verificacao.Split("|");
-                List<Estado> lista1 = SAT(newVerificacao[0]);
-                List<Estado> lista2 = SAT(newVerificacao[1]);
-                List<Estado> retorno = new List<Estado>();
-                foreach (Estado estado1 in lista1)
-                {
-                    retorno.Add(estado1);
-                }
-                foreach (Estado estado2 in lista2)
-                {
-                    if (!retorno.Contains(estado2))
-                    {
-                        retorno.Add(estado2);
-                    }
-                }
-                return retorno;
-            }
-            else if (verificacao.Contains("-"))
-            {
-                return SAT("~" + verificacao.Replace("-", "|"));
-            }
-            else if (verificacao.StartsWith("AX"))
-            {
-                verificacao = ReplaceFirstOccurrance(verificacao, "AX", "EX~");
-                return SAT("~" + verificacao);
-            }
             else if (verificacao.StartsWith("EX"))
             {
                 verificacao = ReplaceFirstOccurrance(verificacao, "EX", "");
                 List<Estado> retorno = SATex(verificacao);
                 return retorno;
+            }
+            else if (verificacao.StartsWith("AX"))
+            {
+                verificacao = ReplaceFirstOccurrance(verificacao, "AX", "EX~");
+                return SAT("~" + verificacao);
             }
             else if (verificacao.StartsWith("EF"))
             {
@@ -204,6 +146,56 @@ namespace VV
                 string[] split = verificacao.Split("U");
                 return SATeu(split[0], split[1]);
             }
+            else if (verificacao.Contains("&"))
+            {
+                string[] newVerificacao = verificacao.Split("&");
+                List<Estado> lista1 = SAT(newVerificacao[0]);
+                List<Estado> lista2 = SAT(newVerificacao[1]);
+                List<Estado> retorno = new List<Estado>();
+
+                retorno = lista1.Intersect(lista2).ToList();
+
+                return retorno;
+            }
+            else if (verificacao.Contains("|"))
+            {
+                string[] newVerificacao = verificacao.Split("|");
+                List<Estado> lista1 = SAT(newVerificacao[0]);
+                List<Estado> lista2 = SAT(newVerificacao[1]);
+                List<Estado> retorno = new List<Estado>();
+                foreach (Estado estado1 in lista1)
+                {
+                    retorno.Add(estado1);
+                }
+                foreach (Estado estado2 in lista2)
+                {
+                    if (!retorno.Contains(estado2))
+                    {
+                        retorno.Add(estado2);
+                    }
+                }
+                return retorno;
+            }
+            else if (verificacao.Contains("-"))
+            {
+                return SAT("~" + verificacao.Replace("-", "&"));
+            }
+            else if (verificacao.StartsWith("~"))
+            {
+                List<Estado> remove = SAT(ReplaceFirstOccurrance(verificacao, "~", ""));
+                List<Estado> result = new List<Estado>();
+
+                foreach (Estado aux in grafo.Estados)
+                {
+                    result.Add(aux);
+                }
+                foreach (Estado estado in remove.ToList())
+                {
+                    result.Remove(estado);
+                }
+
+                return result;
+            }
 
             return null;
         }
@@ -224,7 +216,7 @@ namespace VV
                 foreach(Transicao trans in transicoes)
                 {
                     Estado aux = estados.Where(p => p.Nome.Equals(trans.To)).FirstOrDefault();
-                    if(X.Contains(aux) && !Y.Contains(aux))
+                    if(X.Contains(aux) && !Y.Contains(estado))
                     {
                         Y.Add(estado);
                     }
@@ -234,6 +226,8 @@ namespace VV
             return Y;
         }
 
+        //Verificar SATAF
+        //Verificar EGmon
         public static List<Estado> SATaf(string a)
         {
 

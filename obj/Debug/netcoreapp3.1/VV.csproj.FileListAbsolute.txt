@@ -22,5 +22,3 @@ C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.AssemblyInfoInputs.cache
 C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.AssemblyInfo.cs
 C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.dll
 C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.pdb
-C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.csproj.CoreCompileInputs.cache
-C:\Users\bruno\Desktop\VV\obj\Debug\netcoreapp3.1\VV.genruntimeconfig.cache
