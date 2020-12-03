@@ -16,7 +16,8 @@ namespace VV
         static void Main(string[] args)
         {
 
-            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entradaATM1.txt";
+            string path = Directory.GetCurrentDirectory() + "\\Entradas\\entradaATM1_modelo2.txt";
+            //string path = "Entradas/toto1.txt";
 
             grafo = Parser(path);
 
@@ -95,6 +96,10 @@ namespace VV
             {
                 return null;
             }
+            else if (verificacao.Contains("-"))
+            {
+                return SAT("~" + verificacao.Replace("-", "|"));
+            }
             else if (Regex.IsMatch(verificacao, @"^[a-z]+$"))
             {
                 return grafo.Estados.Where(p => p.Rotulos.Contains(verificacao)).ToList();
@@ -148,7 +153,8 @@ namespace VV
             }
             else if (verificacao.Contains("&"))
             {
-                string[] newVerificacao = verificacao.Split("&");
+                verificacao = ReplaceFirstOccurrance(verificacao, "&", "$");
+                string[] newVerificacao = verificacao.Split("$");
                 List<Estado> lista1 = SAT(newVerificacao[0]);
                 List<Estado> lista2 = SAT(newVerificacao[1]);
                 List<Estado> retorno = new List<Estado>();
@@ -159,7 +165,8 @@ namespace VV
             }
             else if (verificacao.Contains("|"))
             {
-                string[] newVerificacao = verificacao.Split("|");
+                verificacao = ReplaceFirstOccurrance(verificacao, "|", "!");
+                string[] newVerificacao = verificacao.Split("!");
                 List<Estado> lista1 = SAT(newVerificacao[0]);
                 List<Estado> lista2 = SAT(newVerificacao[1]);
                 List<Estado> retorno = new List<Estado>();
@@ -175,10 +182,6 @@ namespace VV
                     }
                 }
                 return retorno;
-            }
-            else if (verificacao.Contains("-"))
-            {
-                return SAT("~" + verificacao.Replace("-", "&"));
             }
             else if (verificacao.StartsWith("~"))
             {
@@ -196,7 +199,6 @@ namespace VV
 
                 return result;
             }
-
             return null;
         }
 
@@ -226,8 +228,6 @@ namespace VV
             return Y;
         }
 
-        //Verificar SATAF
-        //Verificar EGmon
         public static List<Estado> SATaf(string a)
         {
 
@@ -241,21 +241,16 @@ namespace VV
             while (isNotEquals(X, Y))
             {
                 X = Y;
-                foreach (Estado estado in grafo.Estados)
+                foreach (Estado estado in Y)
                 {
-                    List<Transicao> transicoes = grafo.Transicoes.Where(p => p.From.Equals(estado.Nome)).ToList();
-                    bool has = true;
-                    foreach (Transicao transicao in transicoes)
+                    List<Transicao> transicoes = grafo.Transicoes.Where(p => p.To.Equals(estado.Nome)).ToList();
+                    foreach(Transicao trans in transicoes)
                     {
-                        Estado aux = grafo.Estados.Where(p => p.Nome.Equals(transicao.To)).FirstOrDefault();
-                        if (!Y.Contains(aux))
+                        Estado estadoAUX = grafo.Estados.Where(p => p.Nome.Equals(trans.From)).FirstOrDefault();
+                        if (!Aux.Contains(estadoAUX))
                         {
-                            has = false;
+                            Aux.Add(estadoAUX);
                         }
-                    }
-                    if (has && !Aux.Contains(estado))
-                    {
-                        Aux.Add(estado);
                     }
                 }
                 Y = Y.Union(Aux).ToList();
@@ -334,7 +329,7 @@ namespace VV
             return Y;
         }
 
-
+        
         public static bool isNotEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
         {
             var cnt = new Dictionary<T, int>();

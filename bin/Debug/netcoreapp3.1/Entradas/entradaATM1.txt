@@ -13,5 +13,5 @@ s11,acc
 s12,amo
 s13,ins
 s14,rec
-T:s0-s1,s1-s2,s2-s0,s1-s3,s3-s4,s4-s5,s5-s0,s3-s6,s6-s7,s7-s8,s8-s6,s9-s0,s3-s10,s10-s11,s11-s12,s12-s13,s13-s11,s14-s0,s12-s14
-F:EGmon
+T:s0-s1,s1-s2,s2-s0,s1-s3,s3-s4,s4-s5,s5-s0,s3-s6,s6-s7,s7-s8,s7-s9,s8-s6,s9-s0,s3-s10,s10-s11,s11-s12,s12-s13,s13-s11,s14-s0,s12-s14
+F:tra-EFrec
